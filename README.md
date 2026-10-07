@@ -21,7 +21,7 @@ Beginning with the framework developed by Yuan and Johnson (2012), it aims to pr
 
 ## Methodological Development
 
-| Year | Reference | Main contribution |
+| Year | Reference | Main Idea |
 | :--- | :--- | :--- |
 | **2004** | **Johnson, V. E.** [*A Bayesian χ² test for goodness-of-fit*](https://doi.org/10.1214/009053604000000616). *The Annals of Statistics, 32*(6), 2361–2384. | Introduces a Bayesian goodness-of-fit test based on Pearson's chi-squared statistic, with a known asymptotic reference distribution. |
 | **2007** | **Johnson, V. E.** [*Bayesian model assessment using pivotal quantities*](https://doi.org/10.1214/07-BA229). *Bayesian Analysis, 2*(4), 719–734. | Develops a general framework for model assessment using pivotal quantities evaluated at posterior draws. |
