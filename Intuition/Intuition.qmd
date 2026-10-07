@@ -8,12 +8,6 @@ editor: visual
 set.seed(123)
 ```
 
-Based on the papers:
-
-- "A Bayesian Chi-Sq test for goodness-of-fit" Johnson, 2004
-
-- "Bayesian model assessment using pivotal quantities" Johnson, 2007
-
 ## Probability Integral Theorem
 
 Let some continuous random variable X follow a distribution with the CDF, F(x).
@@ -177,7 +171,7 @@ qqline(z_hat, col = "red", lwd = 2)
 
 In the frequentist context, the parameter estimates contain a single set. For the normal linear model, $\hat\beta$ is both the least-squares estimate and the maximum likelihood estimate. The residuals are therefore evaluated at a single set of estimates.
 
-The bayesian check uses the same concept, but rather than a single $(\hat\beta, \hat\sigma)$, the draws from the posterior are plugged in. For each draw $(\beta^{(t)}, \sigma^{(t)})$, we can find the standardized residual at each data point, $z_i^{(t)}$. If the posterior draws were true parameter values, $z^{(t)}$ would be a N(0,1) sample.
+The bayesian check uses the same concept, but rather than a single $(\hat\beta, \hat\sigma)$, the draws from the posterior are plugged in. For each draw $(\beta^{(t)}, \sigma^{(t)})$, we can find the standardized residual at each data point, $z_i^{(t)}$. If the standardized residuals were evaluated at the true parameter values, they would follow a standard normal distribution under the assumed model. In practice, however, the true parameters are unknown, and we instead evaluate these quantities using posterior draws.Importantly, although an individual posterior draw need not equal the true parameter value, Johnson (2007) shows that evaluating a pivotal quantity at a posterior draw preserves its known marginal reference distribution under the joint Bayesian model. This provides a theoretical justification for using pivotal quantities in Bayesian goodness-of-fit assessment.
 
 $$
 z_i^{(t)} = \frac{y_i - x_i^T \beta^{(t)}}{\sigma^{(t)}}, \quad u_i^{(t)} = \Phi(z_i^{(t)})
@@ -236,20 +230,24 @@ We can see that the percentiles U indeed follow Uniform(0,1).
 
 ## Remark: Standardized Residuals as Pivotal Quantity
 
-A **pivotal quantity** is a function of the data and the parameter whose distribution is known and (this known distribution) does not depend on the unknown parameter.
+A **pivotal quantity** is a function of the data and the parameter whose distribution is known and (this known distribution) does not depend on the unknown parameter. The advantage of pivotal quantity is that its sampling distribution is known and does not depend on unknown model parameters.
 
-For one observation, $y_i$, the residual function is
+In the linear regression example, for one observation, $y_i$, the standardized residual
 
 $$
 z_i(\beta,\sigma) = \frac{y_i - x_i^T \beta}{\sigma} \sim N(0,1).
 $$
 
-Since N(0,1) is a known distribution that doesn't depend on any parameters, the residuals are pivotal.
-
-Similarly, $$
+has a standard normal distribution under the assumed model when evaluated at the data-generating parameter values. Applying the standard normal CDF gives $$
 u_i(\beta, \sigma) = \Phi (z_i (\beta, \sigma)) = \Phi (\frac{y_i-x_i^T\beta}{\sigma}) \sim \mathrm{Uniform}(0,1)
 $$
 
-is also pivotal quantity.
+which follows a Uniform(0,1) distribution.
 
-Pivotal quantity is a function of
+This provides a natural basis for assessing model adequacy. Rather than directly comparing observed responses to a model whose distribution depends on unknown parameters, we can examine transformed observations against a common, parameter-free reference distribution.
+
+In Bayesian inference, we can evaluate these transformations using draws from the posterior distribution. Johnson (2007) establishes the theoretical connection between posterior evaluation of pivotal quantities and their reference distributions under the joint Bayesian model.
+
+The practical motivation is therefore to construct diagnostics whose reference distributions are known, even when the original model contains unknown parameters. Departures from these distributions may provide evidence of model misspecification.
+
+Importantly, the pivotal property alone does not guarantee that every diagnostic computed from posterior draws has a known null distribution. The construction and calibration of the overall diagnostic must also be considered.

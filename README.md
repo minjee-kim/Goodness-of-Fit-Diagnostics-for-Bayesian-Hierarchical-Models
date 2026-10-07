@@ -18,10 +18,18 @@ This collection of notes explores goodness-of-fit diagnostics for Bayesian model
 Beginning with the framework developed by Yuan and Johnson (2012), it aims to provide intuitive explanations and practical illustrations of methods for detecting departures from model assumptions.
 
 
-### Foundational References
 
-1. **Johnson, V. E. (2004).** A Bayesian χ² test for goodness-of-fit. *The Annals of Statistics, 32*(6), 2361–2384. https://doi.org/10.1214/009053604000000616
+## Methodological Development
 
-2. **Johnson, V. E. (2007).** Bayesian model assessment using pivotal quantities. *Bayesian Analysis, 2*(4), 719–734. https://doi.org/10.1214/07-BA229
+| Year | Reference | Main contribution |
+| :--- | :--- | :--- |
+| **2004** | **Johnson, V. E.** [*A Bayesian χ² test for goodness-of-fit*](https://doi.org/10.1214/009053604000000616). *The Annals of Statistics, 32*(6), 2361–2384. | Introduces a Bayesian goodness-of-fit test based on Pearson's chi-squared statistic, with a known asymptotic reference distribution. |
+| **2007** | **Johnson, V. E.** [*Bayesian model assessment using pivotal quantities*](https://doi.org/10.1214/07-BA229). *Bayesian Analysis, 2*(4), 719–734. | Develops a general framework for model assessment using pivotal quantities evaluated at posterior draws. |
+| **2012** | **Yuan, Y., & Johnson, V. E.** [*Goodness-of-fit diagnostics for Bayesian hierarchical models*](https://doi.org/10.1111/j.1541-0420.2011.01668.x). *Biometrics, 68*(1), 156–164. | Extends the framework to pivotal discrepancy measures, allowing assessment of model assumptions at multiple levels of a Bayesian hierarchy. |
 
-3. **Yuan, Y., & Johnson, V. E. (2012).** Goodness-of-fit diagnostics for Bayesian hierarchical models. *Biometrics, 68*(1), 156–164. https://doi.org/10.1111/j.1541-0420.2011.01668.x
+## Notes and Illustrations
+
+- **[Intuition](Intuition.qmd)** — Standardized residuals, probability integral transforms, and their role in Bayesian goodness-of-fit assessment.
+
+
+
