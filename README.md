@@ -29,7 +29,7 @@ Beginning with the framework developed by Yuan and Johnson (2012), it aims to pr
 
 ## Notes and Illustrations
 
-- **[Intuition](Intuition.qmd)** — Standardized residuals, probability integral transforms, and their role in Bayesian goodness-of-fit assessment.
+- **[Intuition](https://github.com/minjee-kim/Goodness-of-Fit-Diagnostics-for-Bayesian-Hierarchical-Models/blob/main/Intuition/Intuition.html)** — Standardized residuals, probability integral transforms, and their role in Bayesian goodness-of-fit assessment.
 
 
 
