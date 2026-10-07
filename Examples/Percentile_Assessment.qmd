@@ -1,0 +1,255 @@
+---
+title: "Using Quantiles to Assess the Fit"
+format: html
+editor: visual
+---
+
+```{r, echo = FALSE}
+set.seed(123)
+```
+
+Based on the papers:
+
+- "A Bayesian Chi-Sq test for goodness-of-fit" Johnson, 2004
+
+- "Bayesian model assessment using pivotal quantities" Johnson, 2007
+
+## Probability Integral Theorem
+
+Let some continuous random variable X follow a distribution with the CDF, F(x).
+
+$$
+X \sim F_X
+$$
+
+Let the outcomes of applying the CDF to the random samples, $F(x_1), ..., F(x_n)$ be denotes as $u_1,..., u_n$, such that $u_i = F_X(x_i)$.
+
+$$
+x_1, ..., x_n \sim F_X \\ 
+\\
+F(x_1) = P(X \le x_1) = u_1\\
+F(x_2) = P(X \le x_2) = u_2\\
+....
+$$These values of $u_i$ are realizations of the random variable $U=F_X(X)$.
+
+The probability integral transform states that this random variable $U$ is uniform:
+
+$$
+P(U \le u) = P\bigl(F(X) \le u\bigr) = P\bigl(X \le F^{-1}(u)\bigr) = F\bigl(F^{-1}(u)\bigr) = u. 
+$$
+
+$P(U \le u) = u$ is exactly the uniform CDF, $U \sim \mathrm{Unif}(0,1)$.
+
+**Case 1:** If the data $x_1, ..., x_n$ truly came from the assumed distribution, $x_1, ...,x_n$ observed values are random draws from the distribution of X. Therefore, the CDF applied to each point of the data must follow Unif(0,1).
+
+**Case 2:** If the data $x_1,..., x_n$ are actually realizations of a distribution, $x_1,..., x_n \sim G$, which is different from the assumed distribution, F, the $u_i$ are still realizations of $U=F_X(X)$, but $X \sim G$.
+
+Then, $$
+P(U \le u) = P\bigl(F(X) \le u\bigr) = P\bigl(X \le F^{-1}(u)\bigr)
+$$
+
+but $$P\bigl(X \le F^{-1}(u)\bigr) = G\bigl(F^{-1}(u)\bigr).$$
+
+The distribution of U is only uniform, $P(U \le u) = u$ only if $G = F_X$.
+
+If $G \neq F_X$, the values $u_i = F_X(x_i)$ are samples of $G\bigl(F_X^{-1}(u)\bigr)$, not Uniform(0,1).
+
+**\<Remark\>**
+
+In fact, F and G are fully specified CDFs, each evaluated at a particular parameter value. The same distribution family with two different parameters results in two different CDFs. The probability integral transform is uniform only at the true value.
+
+If the assumed model is correct and the sample is sufficient, the posterior samples of parameters concentrate near the true parameter. Evaluating the CDF of the assumed model at different values of the posterior draws of parameters, if the outcomes of applying the specified CDF on the data departs from uniform(0,1) we can conclude that the assumed model does not represent the true distribution of the data.
+
+However, the inverse is not necessarily true - we cannot conclude an adequate fit based on uniform outcomes of applying posterior based CDF.
+
+### 1. Example: Normal Distribution 
+
+First, examine the case that the model indeed represents the data appropriately.
+
+Draw 500 samples of the "true" distribution, N(0,1), to represent the data.
+
+Assume that we did indeed use N(0,1) as our likelihood. To assess the fit of the data to our model, check whether the data applied onto the assumed CDF follows uniform(0,1).
+
+```{r}
+## let x be the observed data 
+n <- 500
+x <- rnorm(n) 
+## apply the CDF of our assumed, specified model to the observations
+u <- pnorm(x)
+
+## compare these values of u to theoretical Uniform(0,1)
+unif_q <- qunif(ppoints(n))
+
+qqplot(unif_q, u,
+       main = expression(X %~% N(0, 1) * ",  " * U == Phi(X)),
+       xlab = "Uniform(0, 1) quantiles",
+       ylab = "Sample quantiles of U")
+abline(0, 1, col = "red", lwd = 2)
+
+```
+
+Now, examine the case that the model is misspecified.
+
+Draw 500 samples of the "true" distribution, N(0,1), to represent the data.
+
+Assume that we used N(3, 2\^2) as our likelihood. To assess the fit of the data to our model, check whether the data applied onto the assumed CDF follows uniform(0,1).
+
+```{r}
+## let x be the observed data 
+n <- 500
+x <- rnorm(n, mean = 0, sd = 1) 
+## apply the CDF of our assumed, specified model to the observations
+u <- pnorm(x, mean = 3, sd = 2)
+
+## compare these values of u to theoretical Uniform(0,1)
+unif_q <- qunif(ppoints(n))
+
+qqplot(unif_q, u,
+       main = expression(X %~% N(0, 1) * ",  " * U == Phi((X-3)/2)),
+       xlab = "Uniform(0, 1) quantiles",
+       ylab = "Sample quantiles of U")
+abline(0, 1, col = "red", lwd = 2)
+```
+
+### 2. Linear Regression 
+
+#### 2.1 Frequentist Linear Regression 
+
+Let the data contain three covariates with an outcome vector.
+
+The data comes from the true distribution,
+
+$$
+y = \beta_0 + \beta_1 x_1 + \beta_2x_2 + \beta_3x_3 + \epsilon, \quad \epsilon \sim N(0,1) 
+$$
+
+with true values of the coefficients, $\beta_0 = 1, \beta_1 = 0.5, \beta_2 = -0.3, \beta_3 = 0.8$.
+
+```{r}
+n <- 500
+X <- cbind(1, matrix(rnorm(n * 3), n, 3))
+beta <- c(1, 0.5, -0.3, 0.8)
+sigma <- 1
+y <- as.numeric(X %*% beta + rnorm(n, 0, sigma))
+head(cbind(y, X))
+```
+
+Assume that we modeled the data with this multivariate linear regression
+
+$$
+y = \beta_0 + \beta_1 x_1 + \beta_2x_2 + \beta_3x_3 + \epsilon, \quad \epsilon \sim N(0,\sigma^2) 
+$$and estimated the parameters, $\hat \beta$ , and $\hat \sigma$.
+
+```{r}
+fit <- lm(y ~ X - 1) ## considering the intercept 
+beta_hat <- coef(fit)
+sigma_hat <- summary(fit)$sigma
+```
+
+Since the data follows $y_i \sim N( x_i^T\beta, \sigma^2)$, we know that Z transformed data y follows normal(0, 1) :
+
+$$
+z_i = \frac{y_i - x_i^T \beta}{\sigma} \sim N(0,1). 
+$$
+
+Therefore, if our estimated parameters, $\hat \beta$ and $\hat \sigma$, are close to the truth,
+
+$$
+\hat z_i = \frac{y_i - x_i^T \hat\beta}{\hat \sigma}
+$$
+
+the values of $\hat z_i$ should lie close to N(0, 1).
+
+```{r}
+z <- residuals(fit) / sigma_hat
+plot(z)
+```
+
+In the frequentist context, this is the ordinary residual checking.
+
+```{r}
+z_hat <- residuals(fit) / sigma_hat
+qqnorm(z_hat, main = "Standardized residuals against N(0, 1)")
+qqline(z_hat, col = "red", lwd = 2)
+```
+
+#### 2.2 Bayesian Linear Regression 
+
+In the frequentist context, the parameter estimates contain a single set. For the normal linear model, $\hat\beta$ is both the least-squares estimate and the maximum likelihood estimate. The residuals are therefore evaluated at a single set of estimates.
+
+The bayesian check uses the same concept, but rather than a single $(\hat\beta, \hat\sigma)$, the draws from the posterior are plugged in. For each draw $(\beta^{(t)}, \sigma^{(t)})$, we can find the standardized residual at each data point, $z_i^{(t)}$. If the posterior draws were true parameter values, $z^{(t)}$ would be a N(0,1) sample.
+
+$$
+z_i^{(t)} = \frac{y_i - x_i^T \beta^{(t)}}{\sigma^{(t)}}, \quad u_i^{(t)} = \Phi(z_i^{(t)})
+$$
+
+Applying the probability integral transform, the $u_i^{(t)}$ should look Uniform(0,1).
+
+Note that the matrix Z has dimension Txn with each row being a residual vector length n.
+
+Carry out the same linear regression using the brms package:
+
+```{r, message = FALSE}
+library(brms)
+
+dat <- data.frame(y = y, x1 = X[, 2], x2 = X[, 3], x3 = X[, 4])
+
+fit_b <- brm(
+  y ~ x1 + x2 + x3,
+  data = dat,
+  family = gaussian(),
+  chains = 4,
+  iter = 2000,
+  seed = 1,
+  refresh = 0
+)
+```
+
+Assess the residuals using the posterior draws.
+
+```{r, message=FALSE, warning=FALSE}
+## posterior draws 
+draws <- as_draws_df(fit_b)
+beta_draws <- as.matrix(draws[, c("b_Intercept", "b_x1", "b_x2", "b_x3")])
+sigma_draws <- draws$sigma
+
+T <- nrow(beta_draws)
+fitted_draws <- X %*% t(beta_draws) # n by T
+Z <- t((y - fitted_draws) / rep(sigma_draws, each = n))
+U <- pnorm(Z)
+dim(Z)
+```
+
+The dimension of Z matrix is number of iterations (4 chains, 2000 iterations, half of the iterations discarded), 4000, by the length of data, 500.
+
+Randomly selecting a posterior draw,
+
+```{r}
+t <- 1
+qqplot(qunif(ppoints(n)), U[t, ],
+       xlab = "Uniform(0, 1) quantiles",
+       ylab = "Sample quantiles of U")
+abline(0, 1, col = "red", lwd = 2)
+```
+
+We can see that the percentiles U indeed follow Uniform(0,1).
+
+## Remark: Standardized Residuals as Pivotal Quantity
+
+A **pivotal quantity** is a function of the data and the parameter whose distribution is known and (this known distribution) does not depend on the unknown parameter.
+
+For one observation, $y_i$, the residual function is
+
+$$
+z_i(\beta,\sigma) = \frac{y_i - x_i^T \beta}{\sigma} \sim N(0,1).
+$$
+
+Since N(0,1) is a known distribution that doesn't depend on any parameters, the residuals are pivotal.
+
+Similarly, $$
+u_i(\beta, \sigma) = \Phi (z_i (\beta, \sigma)) = \Phi (\frac{y_i-x_i^T\beta}{\sigma}) \sim \mathrm{Uniform}(0,1)
+$$
+
+is also pivotal quantity.
+
+Pivotal quantity is a function of
