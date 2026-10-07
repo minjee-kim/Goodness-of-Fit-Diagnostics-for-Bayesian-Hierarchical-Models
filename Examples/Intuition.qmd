@@ -62,7 +62,7 @@ If the assumed model is correct and the sample is sufficient, the posterior samp
 
 However, the inverse is not necessarily true - we cannot conclude an adequate fit based on uniform outcomes of applying posterior based CDF.
 
-### 1. Example: Normal Distribution 
+### 1. Example: Normal Distribution
 
 First, examine the case that the model indeed represents the data appropriately.
 
@@ -111,9 +111,9 @@ qqplot(unif_q, u,
 abline(0, 1, col = "red", lwd = 2)
 ```
 
-### 2. Linear Regression 
+### 2. Linear Regression
 
-#### 2.1 Frequentist Linear Regression 
+#### 2.1 Frequentist Linear Regression
 
 Let the data contain three covariates with an outcome vector.
 
@@ -173,7 +173,7 @@ qqnorm(z_hat, main = "Standardized residuals against N(0, 1)")
 qqline(z_hat, col = "red", lwd = 2)
 ```
 
-#### 2.2 Bayesian Linear Regression 
+#### 2.2 Bayesian Linear Regression
 
 In the frequentist context, the parameter estimates contain a single set. For the normal linear model, $\hat\beta$ is both the least-squares estimate and the maximum likelihood estimate. The residuals are therefore evaluated at a single set of estimates.
 
