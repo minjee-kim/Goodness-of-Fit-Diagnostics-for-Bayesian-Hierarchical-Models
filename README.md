@@ -17,8 +17,6 @@ The objective is not merely to obtain a posterior distribution, but to examine w
 This collection of notes explores goodness-of-fit diagnostics for Bayesian models, with particular emphasis on hierarchical structures. 
 Beginning with the framework developed by Yuan and Johnson (2012), it aims to provide intuitive explanations and practical illustrations of methods for detecting departures from model assumptions.
 
-
-
 ## Methodological Development
 
 | Year | Reference | Main Idea |
@@ -29,7 +27,19 @@ Beginning with the framework developed by Yuan and Johnson (2012), it aims to pr
 
 ## Notes and Illustrations
 
-- **[Intuition](https://github.com/minjee-kim/Goodness-of-Fit-Diagnostics-for-Bayesian-Hierarchical-Models/blob/main/Intuition/Intuition.html)** — Standardized residuals, probability integral transforms, and their role in Bayesian goodness-of-fit assessment.
+- **[Intuition](https://minjee-kim.github.io/Goodness-of-Fit-Diagnostics-for-Bayesian-Hierarchical-Models/Intuition/Intuition.html)** — Standardized residuals, probability integral transforms, and their role in Bayesian goodness-of-fit assessment.
 
+## Research program
 
+Beyond the notes, this repository is where candidate diagnostics are tried and, if they hold up, turned into functions. The questions below are not results. Each stage has to be settled before the next one is a function rather than a sketch.
 
+| Stage | Question | Objective |
+| :--- | :--- | :--- |
+| 1 | Can randomized conditional CDFs transform multinomial observations into independent uniforms? | Construct a diagnostic |
+| 2 | What happens when the cell probabilities are evaluated at posterior draws? | Establish pivotal properties |
+| 3 | How should discrepancies be combined across experiments and study designs? | Obtain a global goodness-of-fit measure |
+| 4 | Can the full posterior chain be used without treating draws as independent? | Quantify Monte Carlo error |
+| 5 | What is the null distribution of the resulting diagnostic? | Establish calibration |
+| 6 | Can simulations distinguish misspecified prevalence structure, diagnostic accuracy, and dependence? | Evaluate diagnostic power |
+
+Stage 1 is the construction. Stages 2 and 4 are the posterior and dependence questions already visible in the linear-regression illustration. Stages 3, 5, and 6 are the parts that would make the diagnostic usable on the prevalence and diagnostic-test models: one summary across designs, a null distribution, and power against the misspecifications that matter.
