@@ -29,17 +29,15 @@ Beginning with the framework developed by Yuan and Johnson (2012), it aims to pr
 
 - **[Intuition](https://minjee-kim.github.io/Goodness-of-Fit-Diagnostics-for-Bayesian-Hierarchical-Models/Intuition/Intuition.html)** — Standardized residuals, probability integral transforms, and their role in Bayesian goodness-of-fit assessment.
 
-## Research program
+## Workflow
 
-Beyond the notes, this repository is where candidate diagnostics are tried and, if they hold up, turned into functions. The questions below are not results. Each stage has to be settled before the next one is a function rather than a sketch.
+The notes above are the introduction. The rest of the repository is for exploring ideas from these papers and turning the ones that hold up into functions. A diagnostic moves through the stages below.
 
 | Stage | Question | Objective |
 | :--- | :--- | :--- |
-| 1 | Can randomized conditional CDFs transform multinomial observations into independent uniforms? | Construct a diagnostic |
-| 2 | What happens when the cell probabilities are evaluated at posterior draws? | Establish pivotal properties |
-| 3 | How should discrepancies be combined across experiments and study designs? | Obtain a global goodness-of-fit measure |
-| 4 | Can the full posterior chain be used without treating draws as independent? | Quantify Monte Carlo error |
-| 5 | What is the null distribution of the resulting diagnostic? | Establish calibration |
-| 6 | Can simulations distinguish misspecified prevalence structure, diagnostic accuracy, and dependence? | Evaluate diagnostic power |
-
-Stage 1 is the construction. Stages 2 and 4 are the posterior and dependence questions already visible in the linear-regression illustration. Stages 3, 5, and 6 are the parts that would make the diagnostic usable on the prevalence and diagnostic-test models: one summary across designs, a null distribution, and power against the misspecifications that matter.
+| 1 | Can randomized conditional CDFs transform multinomial observations into independent uniforms? | Build the transform |
+| 2 | What happens when the cell probabilities are evaluated at posterior draws? | Check that the transform remains pivotal |
+| 3 | How should discrepancies be combined across experiments and study designs? | Combine checks into one measure |
+| 4 | Can the full posterior chain be used without treating draws as independent? | Account for dependence among draws |
+| 5 | What is the null distribution of the resulting diagnostic? | Calibrate the reference distribution |
+| 6 | Can simulations distinguish misspecified prevalence structure, diagnostic accuracy, and dependence? | Measure power against those departures |
